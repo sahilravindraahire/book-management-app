@@ -1,33 +1,33 @@
-// import { NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 
-// const PROTECTED_PATHS = ["/dashboard"];
-// const AUTH_PATHS = ["/login", "/signup"];
+const PROTECTED_PATHS = ["/dashboard"];
+const AUTH_PATHS = ["/login", "/signup"];
 
-// export function middleware(request) {
+export function middleware(request) {
 
-//   console.log(
-//     "Middleware accessToken:",
-//     request.cookies.get("accessToken")
-//   );
+  console.log(
+    "Middleware accessToken:",
+    request.cookies.get("accessToken")
+  );
 
-//   const { pathname } = request.nextUrl;
-//   const hasToken = request.cookies.has("accessToken");
+  const { pathname } = request.nextUrl;
+  const hasToken = request.cookies.has("accessToken");
 
-//   if (PROTECTED_PATHS.some((p) => pathname.startsWith(p)) && !hasToken) {
-//     const loginUrl = new URL("/login", request.url);
-//     return NextResponse.redirect(loginUrl);
-//   }
+  if (PROTECTED_PATHS.some((p) => pathname.startsWith(p)) && !hasToken) {
+    const loginUrl = new URL("/login", request.url);
+    return NextResponse.redirect(loginUrl);
+  }
 
-//   if (AUTH_PATHS.some((p) => pathname.startsWith(p)) && hasToken) {
-//     return NextResponse.redirect(new URL("/dashboard", request.url));
-//   }
+  if (AUTH_PATHS.some((p) => pathname.startsWith(p)) && hasToken) {
+    return NextResponse.redirect(new URL("/dashboard", request.url));
+  }
 
-//   return NextResponse.next();
-// }
+  return NextResponse.next();
+}
 
-// export const config = {
-//   matcher: ["/dashboard/:path*", "/login", "/signup"],
-// };
+export const config = {
+  matcher: ["/dashboard/:path*", "/login", "/signup"],
+};
 
 //---------------------------------------------------------//
 
@@ -44,30 +44,3 @@
 
 
 //---------------------------------------------------------//
-
-
-import { NextResponse } from "next/server";
-
-export function middleware(request) {
-  const token = request.cookies.get("accessToken")?.value;
-
-  const isProtected = request.nextUrl.pathname.startsWith("/dashboard");
-
-  if (isProtected && !token) {
-    return NextResponse.redirect(new URL("/login", request.url));
-  }
-
-  if (
-    (request.nextUrl.pathname === "/login" ||
-      request.nextUrl.pathname === "/signup") &&
-    token
-  ) {
-    return NextResponse.redirect(new URL("/dashboard", request.url));
-  }
-
-  return NextResponse.next();
-}
-
-export const config = {
-  matcher: ["/dashboard/:path*", "/login", "/signup"],
-};
