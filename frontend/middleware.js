@@ -29,10 +29,42 @@
 //   matcher: ["/dashboard/:path*", "/login", "/signup"],
 // };
 
+//---------------------------------------------------------//
+
+// import { NextResponse } from "next/server";
+
+// export function middleware() {
+//   return NextResponse.next();
+// }
+
+// export const config = {
+//   matcher: ["/dashboard/:path*", "/login", "/signup"],
+// };
+
+
+
+//---------------------------------------------------------//
+
 
 import { NextResponse } from "next/server";
 
-export function middleware() {
+export function middleware(request) {
+  const token = request.cookies.get("accessToken")?.value;
+
+  const isProtected = request.nextUrl.pathname.startsWith("/dashboard");
+
+  if (isProtected && !token) {
+    return NextResponse.redirect(new URL("/login", request.url));
+  }
+
+  if (
+    (request.nextUrl.pathname === "/login" ||
+      request.nextUrl.pathname === "/signup") &&
+    token
+  ) {
+    return NextResponse.redirect(new URL("/dashboard", request.url));
+  }
+
   return NextResponse.next();
 }
 
