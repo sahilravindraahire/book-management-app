@@ -1,5 +1,7 @@
 "use client";
 
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/context/AuthContext";
 import { useEffect, useMemo, useState, useCallback } from "react";
 import api from "@/lib/api";
 import Navbar from "@/components/Navbar";
@@ -7,7 +9,6 @@ import StatsCard from "@/components/StatsCard";
 import BookCard from "@/components/BookCard";
 import BookForm from "@/components/BookForm";
 import BookFilters from "@/components/BookFilters";
-import { useAuth } from "@/context/AuthContext";
 
 function DashboardPage() {
   const { user, loading: authLoading } = useAuth();
@@ -21,6 +22,13 @@ function DashboardPage() {
   const [editingBook, setEditingBook] = useState(null);
   const [status, setStatus] = useState("");
   const [tag, setTag] = useState("");
+  const router = useRouter()
+
+  useEffect(() => {
+    if(!authLoading && !user){
+      router.replace("/login")
+    }
+  }, [authLoading, user, router])
 
   const fetchStats = useCallback(async () => {
     const res = await api.get("/books/dashboard/stats");
