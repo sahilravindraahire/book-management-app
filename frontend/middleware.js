@@ -4,6 +4,12 @@ const PROTECTED_PATHS = ["/dashboard"];
 const AUTH_PATHS = ["/login", "/signup"];
 
 export function middleware(request) {
+
+  console.log(
+    "Middleware accessToken:",
+    request.cookies.get("accessToken")
+  );
+
   const { pathname } = request.nextUrl;
   const hasToken = request.cookies.has("accessToken");
 
