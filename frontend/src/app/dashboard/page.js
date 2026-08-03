@@ -22,13 +22,13 @@ function DashboardPage() {
   const [editingBook, setEditingBook] = useState(null);
   const [status, setStatus] = useState("");
   const [tag, setTag] = useState("");
-  const router = useRouter()
+  const router = useRouter();
 
   useEffect(() => {
-    if(!authLoading && !user){
-      router.replace("/login")
+    if (!authLoading && !user) {
+      router.replace("/login");
     }
-  }, [authLoading, user, router])
+  }, [authLoading, user, router]);
 
   const fetchStats = useCallback(async () => {
     const res = await api.get("/books/dashboard/stats");
@@ -64,30 +64,28 @@ function DashboardPage() {
     return <p>Checking authentication...</p>;
   }
 
+  if (!user) {
+    return <p>Redirecting to login...</p>;
+  }
+
   const handleCreate = async (formData) => {
     await api.post("/books", formData);
     setShowForm(false);
     await Promise.all([fetchBooks(), fetchStats()]);
   };
 
-  // const handleUpdate = async (formData) => {
-  //   await api.patch(`/books/${editingBook._id}`, formData);
-  //   setEditingBook(null);
-  //   await Promise.all([fetchBooks(), fetchStats()]);
-  // };
-
   const handleUpdate = async (formData) => {
-  if (!editingBook?._id) {
-    console.error("No book selected for editing");
-    return;
-  }
+    if (!editingBook?._id) {
+      console.error("No book selected for editing");
+      return;
+    }
 
-  await api.patch(`/books/${editingBook._id}`, formData);
+    await api.patch(`/books/${editingBook._id}`, formData);
 
-  setEditingBook(null);
+    setEditingBook(null);
 
-  await Promise.all([fetchBooks(), fetchStats()]);
-};
+    await Promise.all([fetchBooks(), fetchStats()]);
+  };
 
   const handleDelete = async (bookId) => {
     if (!confirm("Remove this book from your collection?")) return;
