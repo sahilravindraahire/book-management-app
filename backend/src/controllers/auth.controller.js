@@ -3,6 +3,7 @@ import { User } from "../models/user.model.js";
 import { apiError } from "../utils/apiError.js";
 import { apiResponse } from "../utils/apiResponse.js";
 import { asyncHandler } from "../utils/asynchandler.js";
+import bcrypt from "bcryptjs"
 
 const generateTokens = async (userId) => {
   try {
@@ -39,7 +40,9 @@ export const registerUser = asyncHandler(async (req, res) => {
     throw new apiError(409, "An account with this email already exists");
   }
 
-  const user = await User.create({ name, email, password });
+  const hashedPassword = await bcrypt.hash(password, 10)
+
+  const user = await User.create({ name, email, password: hashedPassword});
 
   const { accessToken, refreshToken } = await generateTokens(user._id);
 
