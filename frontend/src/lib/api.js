@@ -12,11 +12,16 @@ api.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
+    const isExemptFromRetry =
+      originalRequest.url?.includes("/auth/login") ||
+      originalRequest.url?.includes("/auth/register") ||
+      originalRequest.url?.includes("/auth/refresh-token") ||
+      originalRequest.url?.includes("/auth/me"); // ✅ don't try to "refresh" a routine auth check
+
     if (
       error.response?.status === 401 &&
       !originalRequest._retry &&
-      !originalRequest.url?.includes("/auth/login") &&
-      !originalRequest.url?.includes("/auth/refresh-token")
+      !isExemptFromRetry
     ) {
       originalRequest._retry = true;
       if (!isRefreshing) {
@@ -27,7 +32,10 @@ api.interceptors.response.use(
           return api(originalRequest);
         } catch (refreshError) {
           isRefreshing = false;
-          if (typeof window !== "undefined") {
+          if (
+            typeof window !== "undefined" &&
+            window.location.pathname !== "/login" // ✅ never redirect-loop from the login page itself
+          ) {
             window.location.href = "/login";
           }
           return Promise.reject(refreshError);
