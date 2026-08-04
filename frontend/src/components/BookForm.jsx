@@ -59,7 +59,7 @@ function BookForm({ initialBook, onSubmit, onCancel }) {
   return (
     <form
       onSubmit={handleSubmit}
-      className="bg-white rounded-xl border border-ink/10 p-4 sm:p-5 shadow-sm flex flex-col gap-3"
+      className="bg-white rounded-2xl border border-ink/10 p-4 sm:p-5 shadow-lg shadow-ink/5 flex flex-col gap-3 animate-fadeUp"
     >
       <h3 className="font-serif font-semibold text-lg">
         {initialBook ? "Edit Book" : "Add a Book"}
@@ -73,7 +73,7 @@ function BookForm({ initialBook, onSubmit, onCancel }) {
 
       <div>
         <div className="flex flex-col sm:flex-row gap-4">
-          <div className="w-24 h-32 rounded-md border border-ink/15 bg-paper overflow-hidden flex items-center justify-center text-3xl">
+          <div className="w-24 h-32 rounded-xl border-2 border-dashed border-ink/15 bg-paper overflow-hidden flex items-center justify-center text-3xl shadow-inner">
             {preview ? (
               <img
                 src={preview}

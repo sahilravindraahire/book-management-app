@@ -20,14 +20,14 @@ const STATUS_META = {
 
 function BookCard({ book, onEdit, onDelete, onStatusChange }) {
   return (
-    <div className="bg-white rounded-xl border border-ink/10 p-4 shadow-sm flex flex-col gap-3">
+    <div className="group bg-white rounded-2xl border border-ink/10 p-4 shadow-sm hover:shadow-xl hover:shadow-ink/10 hover:-translate-y-1 transition-all duration-300 flex flex-col gap-3">
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-start gap-3">
           {book.coverImage?.url && (
             <img
               src={book.coverImage.url}
               alt={`${book.title} cover`}
-              className="w-12 h-16 object-cover rounded-md border border-ink/10 flex-shrink-0"
+              className="w-12 h-16 object-cover rounded-md border border-ink/10 flex-shrink-0 shadow-sm group-hover:shadow-md transition-shadow"
             />
           )}
           <div>
@@ -38,7 +38,7 @@ function BookCard({ book, onEdit, onDelete, onStatusChange }) {
           </div>
         </div>
         <span
-          className={`text-xs px-2 py-1 rounded-full whitespace-nowrap ${STATUS_META[book.status].color}`}
+          className={`text-xs px-2.5 py-1 rounded-full whitespace-nowrap font-medium shadow-sm ${STATUS_META[book.status].color}`}
         >
           {STATUS_META[book.status].emoji} {STATUS_META[book.status].label}
         </span>
@@ -49,7 +49,7 @@ function BookCard({ book, onEdit, onDelete, onStatusChange }) {
           {book.tags.map((tag) => (
             <span
               key={tag}
-              className="text-xs px-2 py-0.5 rounded-full bg-ink/5 text-ink/70"
+              className="text-xs px-2.5 py-1 rounded-full bg-ink/5 text-ink/70 border border-ink/5 hover:bg-ink/10 transition-colors"
             >
               #{tag}
             </span>

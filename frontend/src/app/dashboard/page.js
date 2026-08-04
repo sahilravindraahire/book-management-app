@@ -101,7 +101,7 @@ function DashboardPage() {
     <>
       <Navbar />
       <main className="max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-8 flex flex-col gap-6">
-        <section className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
+        <section className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 animate-fadeUp">
           <StatsCard label="Total Books" value={stats.total} emoji="📚" />
           <StatsCard
             label="Want to Read"
@@ -127,7 +127,7 @@ function DashboardPage() {
           {!showForm && !editingBook && (
             <button
               onClick={() => setShowForm(true)}
-              className="px-4 py-2 rounded-md bg-accent text-white text-sm font-medium hover:opacity-90 transition"
+              className="px-5 py-2.5 rounded-lg bg-accent text-white text-sm font-semibold shadow-md shadow-accent/20 hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200"
             >
               + Add Book
             </button>
@@ -153,20 +153,22 @@ function DashboardPage() {
           {loading ? (
             <p className="text-ink/50 text-sm">Loading your collection...</p>
           ) : books.length === 0 ? (
-            <div className="text-center py-16 text-ink/50">
-              <p className="text-3xl mb-2">🗒️</p>
-              <p>No books match these filters yet.</p>
+            <div className="text-center py-20 text-ink/50 animate-fadeUp">
+              <p className="text-4xl mb-3">🗒️</p>
+              <p className="text-base">No books match these filters yet.</p>
             </div>
           ) : (
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {books.map((book) => (
-                <BookCard
+                <div key={book._id} className="animate-fadeUp" style={{ animationDelay: `${i * 40}ms` }}>
+                  <BookCard
                   key={book._id}
                   book={book}
                   onEdit={setEditingBook}
                   onDelete={handleDelete}
                   onStatusChange={handleStatusChange}
                 />
+                </div>
               ))}
             </div>
           )}
