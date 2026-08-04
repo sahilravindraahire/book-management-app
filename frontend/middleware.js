@@ -1,29 +1,18 @@
-// middleware.js
 import { NextResponse } from "next/server";
 
-const PUBLIC_ONLY_ROUTES = ["/login", "/signup"];
-const PROTECTED_ROUTES = ["/dashboard"];
+const PROTECTED_PATHS = ["/dashboard"];
+const AUTH_PATHS = ["/login", "/signup"];
 
 export function middleware(request) {
   const { pathname } = request.nextUrl;
-  const token = request.cookies.get("accessToken")?.value;
+  const hasToken = request.cookies.has("accessToken");
 
-  const isProtectedRoute = PROTECTED_ROUTES.some((route) =>
-    pathname.startsWith(route)
-  );
-  const isPublicOnlyRoute = PUBLIC_ONLY_ROUTES.some((route) =>
-    pathname.startsWith(route)
-  );
-
-  // Not logged in, trying to hit a protected route -> send to login
-  if (isProtectedRoute && !token) {
+  if (PROTECTED_PATHS.some((p) => pathname.startsWith(p)) && !hasToken) {
     const loginUrl = new URL("/login", request.url);
-    loginUrl.searchParams.set("from", pathname);
     return NextResponse.redirect(loginUrl);
   }
 
-  // Already logged in, trying to hit login/signup -> send to dashboard
-  if (isPublicOnlyRoute && token) {
+  if (AUTH_PATHS.some((p) => pathname.startsWith(p)) && hasToken) {
     return NextResponse.redirect(new URL("/dashboard", request.url));
   }
 
@@ -33,6 +22,7 @@ export function middleware(request) {
 export const config = {
   matcher: ["/dashboard/:path*", "/login", "/signup"],
 };
+
 
 
 // import { NextResponse } from "next/server";
