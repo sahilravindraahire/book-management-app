@@ -159,7 +159,7 @@ function DashboardPage() {
             </div>
           ) : (
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {books.map((book) => (
+              {books.map((book, i) => (
                 <div key={book._id} className="animate-fadeUp" style={{ animationDelay: `${i * 40}ms` }}>
                   <BookCard
                   key={book._id}
