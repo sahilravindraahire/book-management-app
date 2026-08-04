@@ -3,27 +3,27 @@ import { User } from "../models/user.model.js";
 import { apiError } from "../utils/apiError.js";
 import { apiResponse } from "../utils/apiResponse.js";
 import { asyncHandler } from "../utils/asynchandler.js";
-import {
-  generateAccessToken,
-  generateRefreshToken,
-} from "../utils/generateToken.js";
+
+const generateTokens = async (userId) => {
+  try {
+    const user = await User.findById(userId);
+    const accessToken = user.generateAccessToken(userId);
+    const refreshToken = user.generateRefreshToken(userId);
+  
+    user.refreshToken = refreshToken;
+  
+    await user.save({ validateBeforeSave: false });
+  
+    return { accessToken, refreshToken };
+  } catch (error) {
+    throw new apiError(500, "something went wrong while generating access and refresh token")
+  }
+};
 
 const cookieOptions = {
   httpOnly: true,
   secure: true,
   sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-};
-
-const generateTokens = async (userId) => {
-  const user = await User.findById(userId);
-  const accessToken = generateAccessToken(user);
-  const refreshToken = generateRefreshToken(user);
-
-  user.refreshToken = refreshToken;
-
-  await user.save({ validateBeforeSave: false });
-
-  return { accessToken, refreshToken };
 };
 
 export const registerUser = asyncHandler(async (req, res) => {
